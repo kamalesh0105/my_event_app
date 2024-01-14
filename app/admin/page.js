@@ -1,10 +1,13 @@
+// app/components/LoginForm.js
 "use client";
 import React, { useState } from "react";
 import { navigate } from "@/actions";
+import axios from "axios";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginStatus, setLoginStatus] = useState(null);
 
   const onChangerUsername = (e) => {
     setUsername(e.target.value);
@@ -16,17 +19,23 @@ const LoginForm = () => {
 
   const Onsignin = async (e) => {
     e.preventDefault();
-    const user = {
-      username,
-      password,
-    };
-    if (user.username == "admin" && user.password == "root") {
-      console.log("Login success");
-      navigate("/");
-    } else {
-      console.log("login failed");
+    try {
+      const response = await axios.post("/api/adminlogin", {
+        username,
+        password,
+      });
+
+      if (response.status === 200 && response.data.success) {
+        console.log(response.data.message);
+        setLoginStatus(true);
+        navigate("/");
+      } else {
+        console.log(response.data.message);
+        setLoginStatus(false);
+      }
+    } catch (error) {
+      console.log("Error While Signin: " + error);
     }
-    // Add logic for form submission or any other actions
   };
 
   return (
@@ -74,6 +83,9 @@ const LoginForm = () => {
             Login
           </button>
         </form>
+        {loginStatus !== null && (
+          <p>{loginStatus ? "Login success!" : "Login failed."}</p>
+        )}
       </div>
     </div>
   );
