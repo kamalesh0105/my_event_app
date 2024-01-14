@@ -1,20 +1,22 @@
-// pages/index.js
 "use client";
-import React, { useState } from "react";
+import bcrypt from "bcryptjs";
 
-const Home = () => {
-  const [count, setCount] = useState(0);
-
-  const incrementCount = () => {
-    setCount(count + 1);
+const Counter = () => {
+  const hashme = (e) => {
+    e.preventDefault();
+    var name = { name: "kamalesh" };
+    const hash = bcrypt.hashSync(name.name, 10);
+    console.log(hash);
   };
 
   return (
     <div>
-      <h1>Count: {count}</h1>
-      <button onClick={incrementCount}>Increment</button>
+      <h1>Welcome to Hashing</h1>
+      <button onClick={hashme} className="text-white bg-light">
+        Click me
+      </button>
     </div>
   );
 };
 
-export default Home;
+export default Counter;

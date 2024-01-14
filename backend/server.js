@@ -3,13 +3,13 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 //import libs files here...
-const db = require("./libs/includes/Database");
+const userLoginRoute = require("./router/user.Route");
 //server code
 const app = express();
 app.use(express.json());
 dotenv.config();
+app.use("/admin/login", userLoginRoute);
 const port = process.env.PORT || 5000;
-const conn = db.getconn();
 app.get("/", (req, res) => {
   res.json("Welcome to myserver");
 });
