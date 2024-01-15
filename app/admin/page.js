@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { navigate } from "@/actions";
 import axios from "axios";
 import bcrypt from "bcryptjs";
-import { Salsa } from "next/font/google";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -21,16 +20,15 @@ const LoginForm = () => {
 
   const Onsignin = async (e) => {
     e.preventDefault();
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    console.log(username, hashedPassword);
+    // const hashedPassword = bcrypt.hashSync(password, 10);
+    // console.log(username, hashedPassword);
     try {
       const response = await axios.post("/api/adminlogin", {
         username,
-        password: hashedPassword,
+        password,
       });
 
       if (response.status === 200 && response.data.success) {
-        console.log(response.data.message);
         setLoginStatus(true);
         navigate("/");
       } else {
