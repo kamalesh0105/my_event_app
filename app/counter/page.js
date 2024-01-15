@@ -6,7 +6,13 @@ const Counter = () => {
     e.preventDefault();
     var name = { name: "kamalesh" };
     const hash = bcrypt.hashSync(name.name, 10);
-    console.log(hash);
+    console.log("first hash:" + hash);
+    const isMatch = bcrypt.compareSync(hash, hash);
+    if (isMatch) {
+      console.log("Password Matches");
+    } else {
+      console.log("Not match");
+    }
   };
 
   return (

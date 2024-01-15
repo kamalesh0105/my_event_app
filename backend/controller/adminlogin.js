@@ -3,6 +3,7 @@ const User = require("../libs/includes/user.class");
 const Adminlogin = async (req, res) => {
   const { username, password } = req.body;
   try {
+    console.log("in backend api");
     if (username && password) {
       const isLogin = await User.authenticate(username, password);
       if (isLogin) {

@@ -34,7 +34,7 @@ class User {
   }
   static async authenticate(username, password) {
     if (!User.password) {
-      if (!(await User.loadPasswordFromDatabase())) {
+      if (!(await User.gethashedpass(username))) {
         return false;
       }
     }
