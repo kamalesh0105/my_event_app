@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { navigate } from "@/actions";
 import axios from "axios";
-import bcrypt from "bcryptjs";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -20,8 +19,6 @@ const LoginForm = () => {
 
   const Onsignin = async (e) => {
     e.preventDefault();
-    // const hashedPassword = bcrypt.hashSync(password, 10);
-    // console.log(username, hashedPassword);
     try {
       const response = await axios.post("/api/adminlogin", {
         username,
@@ -30,12 +27,24 @@ const LoginForm = () => {
 
       if (response.status === 200 && response.data.success) {
         setLoginStatus(true);
-        navigate("/");
+        setTimeout(() => {
+          setLoginStatus(null); // Clear the success message
+          navigate("/admin/dashboard/home");
+        }, 1000);
       } else {
         console.log(response.data.message);
         setLoginStatus(false);
+        setTimeout(() => {
+          setLoginStatus(null); // Clear the success message
+          navigate("/admin");
+        }, 1000);
       }
     } catch (error) {
+      setLoginStatus(false);
+      setTimeout(() => {
+        setLoginStatus(null); // Clear the success message
+        navigate("/admin");
+      }, 1000);
       console.log("Error While Signin: " + error);
     }
   };
@@ -86,7 +95,7 @@ const LoginForm = () => {
           </button>
         </form>
         {loginStatus !== null && (
-          <p>{loginStatus ? "Login success!" : "Login failed."}</p>
+          <p>{loginStatus ? "Login success!" : "Login failed...Try Again"}</p>
         )}
       </div>
     </div>
