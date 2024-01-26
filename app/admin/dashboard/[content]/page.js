@@ -1,3 +1,4 @@
+"use client";
 import Sidebar from "@/app/components/admin/sidebar";
 import Layout from "@/app/components/admin/Layout";
 import styles from "@/app/assets/styles/dashboard.module.css";
@@ -5,6 +6,7 @@ import dynamic from "next/dynamic";
 
 export default function Dashboard({ params }) {
   const option = params?.content || "home";
+  console.log(option);
 
   const MainContent = dynamic(() =>
     import(`@/app/components/admin/dashboardContents/${option}`)
