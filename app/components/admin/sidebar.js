@@ -71,7 +71,7 @@ const Sidebar = () => {
           </a>
         </li>
         <li className="nav-item">
-          <a href="/admin/dashboard/dev" className="nav-link text-white">
+          <a href="/admin/dashboard/devsupport" className="nav-link text-white">
             Dev Support
           </a>
         </li>
