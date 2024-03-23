@@ -2,19 +2,11 @@
 import Modal from "@/app/utils/modal";
 import React, { useState, useEffect } from "react";
 const Home = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(true); // Set showModal to true initially
 
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-
-  const handleHideModal = () => {
+  const handleCloseModal = () => {
     setShowModal(false);
   };
-
-  useEffect(() => {
-    handleShowModal(); // Show the modal when the component mounts
-  }, []); // Empty dependency array ensures this effect runs only once when the component mounts
 
   return (
     <div>
@@ -23,7 +15,7 @@ const Home = () => {
         <Modal
           title="Example Modal"
           content="This is the content of the modal."
-          onHide={handleHideModal}
+          onClose={handleCloseModal}
         />
       )}
     </div>
