@@ -124,3 +124,9 @@ a {
   transform: scale(1.05); /* Zoom in effect on hover */
   box-shadow: 0 0 20px 5px rgba(180, 0, 255, 0.7); /* Purple shadow effect with increased visibility */
 }
+.purple {
+  color: #663399;
+}
+.yellow {
+  color: #ffcd39;
+}
