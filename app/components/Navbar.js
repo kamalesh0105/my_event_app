@@ -44,7 +44,7 @@ const Navbar = () => {
             </a>
           </li>
           <li className="nav-item px-3">
-            <a href="/safety" className="nav-link">
+            <a href="/gallery" className="nav-link">
               Gallery
             </a>
           </li>
@@ -61,7 +61,7 @@ const Navbar = () => {
           </li>
           <li className="nav-item px-0">
             <button className="btn btn-outline-secondary transparent-btn text-light">
-              Register Now!
+              <a href="/register"> Register Now!</a>
             </button>
           </li>
           <li className="nav-item px-4">
