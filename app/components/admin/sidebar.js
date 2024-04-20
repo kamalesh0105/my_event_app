@@ -1,4 +1,20 @@
+import { usePathname, useRouter } from "next/navigation";
+
 const Sidebar = () => {
+  const routename = usePathname();
+
+  // Define base path for the sidebar items
+  const basePath = "/admin/dashboard";
+
+  // Define sidebar items with their relative paths
+  const sidebarItems = [
+    { href: "/home", label: "Home" },
+    { href: "/events", label: "Manage Events" },
+    { href: "/add", label: "Add Events" },
+    { href: "/participants", label: "Participants" },
+    { href: "/devsupport", label: "Dev Support" },
+    // Add more sidebar items as needed
+  ];
   return (
     <div
       className="d-flex flex-column flex-shrink-0 p-3 text-dark"
@@ -15,69 +31,19 @@ const Sidebar = () => {
       </a>
       <hr className="text-white" />
       <ul className="nav nav-pills flex-column mb-auto">
-        <li className="nav-item">
-          <a
-            href="/admin/dashboard/home"
-            className="nav-link active px-3 "
-            aria-current="page"
-          >
-            Home
-          </a>
-        </li>
-        <li className="nav-item">
-          <button
-            className="btn btn-toggle d-inline-flex align-items-center px-3  rounded border-0 collapsed text-white"
-            data-bs-toggle="collapse"
-            data-bs-target="#dashboardCollapse"
-            aria-expanded="false"
-          >
-            Events
-          </button>
-          <div className="collapse" id="dashboardCollapse">
-            <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-              <li className="px-5">
-                <a
-                  href="/admin/dashboard/events"
-                  className=" d-inline-flex text-decoration-none rounded text-secondary "
-                >
-                  View
-                </a>
-              </li>
-              <li className="px-5">
-                <a
-                  href="/admin/dashboard/events"
-                  className=" d-inline-flex text-decoration-none rounded text-secondary "
-                >
-                  Add
-                </a>
-              </li>
-              <li className="px-5">
-                <a
-                  href="/admin/dashboard/events"
-                  className=" d-inline-flex text-decoration-none rounded text-secondary "
-                >
-                  Delete
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li className="nav-item">
-          <a
-            href="/admin/dashboard/participants"
-            className="nav-link text-white"
-          >
-            Participants
-          </a>
-        </li>
-        <li className="nav-item">
-          <a href="/admin/dashboard/devsupport" className="nav-link text-white">
-            Dev Support
-          </a>
-        </li>
-
+        {sidebarItems.map((item) => (
+          <li key={item.href} className="nav-item">
+            <a
+              href={`${basePath}${item.href}`}
+              className={`nav-link text-white ${
+                routename === `${basePath}${item.href}` ? "bg-primary" : ""
+              }`}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
         <hr className="text-white" />
-        <li className="nav-item"></li>
       </ul>
     </div>
   );

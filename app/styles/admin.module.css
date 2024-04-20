@@ -3,3 +3,16 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+.btn_custom {
+  background-color: #8d75ee;
+  border-color: black;
+}
+
+.btn-custom:hover {
+  background-color: #8d75ee;
+  border-color: white;
+}
+
+.cus_col {
+  color: #6fdbf0;
+}

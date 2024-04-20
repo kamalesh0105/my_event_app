@@ -65,7 +65,7 @@ const Home = () => {
 
   const handleCloseModal = () => {
     setShowModal(false); // Close the modal by setting showModal to false
-    router.push("/admin");
+    router.push("/admin/login");
   };
 
   return (

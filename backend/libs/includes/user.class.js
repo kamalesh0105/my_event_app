@@ -1,45 +1,41 @@
+const { collection, getDocs, query, where } = require("firebase/firestore");
+// const db = require("../../config/supabase");
 const bcrypt = require("bcryptjs");
-const Database = require("./Database.class");
 class User {
-  //set the password from the gethashedpass function
-  static password = null;
-  static db = new Database();
   constructor(username, password) {
-    this.password = password;
     this.username = username;
+    this.password = password;
   }
-  static async gethashedpass(username) {
+
+  static async getHashedPassword(username) {
     try {
-      // Create a database instance
-      const db = new Database();
-
-      // SQL query to retrieve the hashed password based on the username
-      const sql = "SELECT `password` FROM `auth` WHERE `username` = ? LIMIT 1 ";
-      const result = await User.db.query(sql, [username]);
-
-      // Extract the hashed password from the result
-      const hashedPasswordFromDb = result[0]?.password;
-
-      if (hashedPasswordFromDb) {
-        User.password = hashedPasswordFromDb;
-        return true;
+      const q = query(
+        collection(db, "auth"),
+        where("username", "==", username)
+      );
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return doc.data().password;
       } else {
         console.log("User not found in the database");
-        return false;
+        return null;
       }
     } catch (error) {
       console.error("Error loading password from the database:", error.message);
-      return false;
+      return null;
     }
   }
+
   static async authenticate(username, password) {
-    if (!User.password) {
-      if (!(await User.gethashedpass(username))) {
+    try {
+      const hashedPassword = await User.getHashedPassword(username);
+
+      if (!hashedPassword) {
+        console.log("User not found");
         return false;
       }
-    }
-    try {
-      const hashedPassword = User.password;
+
       const isMatch = bcrypt.compareSync(password, hashedPassword);
       if (isMatch) {
         console.log("Authentication successful");
@@ -48,11 +44,10 @@ class User {
         console.log("Authentication failed: Incorrect password");
         return false;
       }
-    } catch (e) {
-      console.error("Error during authentication:", e.message);
+    } catch (error) {
+      console.error("Error during authentication:", error.message);
       return false;
     }
   }
 }
-
 module.exports = User;

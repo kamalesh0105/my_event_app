@@ -33,6 +33,7 @@ const Events = () => {
   const events = eventsData.events;
   return (
     <div className="container">
+      <div className=""></div>
       <div className="row">
         {events.map((event) => (
           <div key={event.id} className="col-md-4 mb-4">

@@ -66,7 +66,7 @@ const Navbar = () => {
           </li>
           <li className="nav-item px-4">
             <button className="btn btn-outline-secondary transparent-btn text-light">
-              <a href="/admin">Dashboard</a>
+              <a href="/admin/login">Dashboard</a>
             </button>
           </li>
         </ul>
