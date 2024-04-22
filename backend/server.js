@@ -9,7 +9,7 @@ const testrouter = require("./router/test.Router");
 const app = express();
 app.use(express.json());
 dotenv.config();
-app.use("/admin", userLoginRoute);
+app.use("/auth", userLoginRoute);
 app.use("/test", testrouter);
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {

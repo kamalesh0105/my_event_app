@@ -8,6 +8,7 @@ const SignupForm = () => {
   const [password, setPassword] = useState("");
   const [confirmpass, setconfirmpass] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
+  const [signupStatus, setSignupStatus] = useState(null);
 
   const onChangerUsername = (e) => {
     setUsername(e.target.value);
@@ -20,37 +21,37 @@ const SignupForm = () => {
     setconfirmpass(e.target.value);
   };
 
-  const Onsignin = async (e) => {
+  const Onsignup = async (e) => {
     e.preventDefault();
     setPasswordMatch(password == confirmpass);
     if (!passwordMatch) {
       return;
     } else {
       try {
-        const response = await axios.post("/api/signup", {
+        const response = await axios.post("/api/auth/signup", {
           username,
           password,
         });
 
         if (response.status === 200 && response.data.success) {
-          setLoginStatus(true);
+          setSignupStatus(true);
           setTimeout(() => {
-            setLoginStatus(null); // Clear the success message
-            // navigate("/admin/dashboard/login");
+            setSignupStatus(null); // Clear the success message
+            navigate("/auth/login");
           }, 1000);
         } else {
           console.log(response.data.message);
-          setLoginStatus(false);
+          setSignupStatus(false);
           setTimeout(() => {
-            setLoginStatus(null); // Clear the success message
-            navigate("/admin");
-          }, 1000);
+            setSignupStatus(null); // Clear the success message
+            navigate("/auth/signup");
+          }, 3000);
         }
       } catch (error) {
-        setLoginStatus(false);
+        setSignupStatus(false);
         setTimeout(() => {
-          setLoginStatus(null); // Clear the success message
-          navigate("/admin");
+          setSignupStatus(null); // Clear the success message
+          navigate("/auth/signup");
         }, 1000);
         console.log("Error While Signin: " + error);
       }
@@ -62,7 +63,7 @@ const SignupForm = () => {
       <div className="wrapper d-flex flex-column align-items-center justify-content-center vh-100">
         <form
           method="post"
-          onSubmit={Onsignin}
+          onSubmit={Onsignup}
           action="/submit-url"
           className="login-form p-4 bg-black shadow-lg rounded"
           style={{
@@ -146,6 +147,11 @@ const SignupForm = () => {
               Signin!
             </a>
           </p>
+          {signupStatus !== null && (
+            <p className="text-primary">
+              {signupStatus ? "Signup Success" : "Signup Failed!Try Again"}
+            </p>
+          )}
         </form>
       </div>
     </div>

@@ -14,8 +14,11 @@ class signup {
         email: username,
         password: password,
       });
-      console.log(error);
+      console.log("errror" + error);
+      console.log(data);
       return data;
+    } else {
+      return false;
     }
   }
 }

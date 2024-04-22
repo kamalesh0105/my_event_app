@@ -1,15 +1,15 @@
 const signUp = require("../libs/includes/signup.class");
 
-const Signup = async (req, res) => {
+const SignupController = async (req, res) => {
   const { username, password } = req.body;
   try {
     console.log("in backend api");
     if (username && password) {
       const result = await signUp.signup(username, password);
-      if (result) {
-        res.status(200).json({ res: result });
+      if (result.user !== null) {
+        res.status(200).json({ res: true, data: result });
       } else {
-        res.status(400).json({ res: "error" });
+        res.status(400).json({ res: false });
       }
     } else {
       res.status(400).json({ error: "Username and password are required" });
@@ -20,4 +20,4 @@ const Signup = async (req, res) => {
   }
 };
 
-module.exports = Signup;
+module.exports = SignupController;

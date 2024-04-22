@@ -1,68 +1,63 @@
 "use client";
-import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import supabaseClient from "../config/supabaseClient";
 
-const Modal = ({ isOpen, onClose, title, content }) => {
-  const handleCloseModal = () => {
-    onClose(); // Call the onClose function passed as a prop
-  };
-
-  return (
-    <>
-      {isOpen && (
-        <div
-          className="modal d-flex align-items-center justify-content-center"
-          tabIndex="-1"
-          role="dialog"
-          style={{ display: "block" }}
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title text-dark">{title}</h5>
-                <button
-                  type="button"
-                  className="close"
-                  aria-label="Close"
-                  onClick={handleCloseModal}
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <p className="text-dark">{content}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-const Home = () => {
-  const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
+const Test = () => {
+  const [sessionData, setSessionData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setShowModal(true); // Set showModal to true when the component mounts
-  }, []); // Empty dependency array ensures this effect runs only once when the component mounts
+    // Fetch session data when component mounts
+    fetchSessionData();
+  }, []);
 
-  const handleCloseModal = () => {
-    setShowModal(false); // Close the modal by setting showModal to false
-    router.push("/admin");
+  const fetchSessionData = async () => {
+    try {
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      const {
+        data: { user },
+      } = await supabaseClient.auth.getUser();
+      if (error) {
+        throw error;
+      }
+      setSessionData(data);
+      setUser(user);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClick = async () => {
+    setLoading(true);
+    await fetchSessionData();
   };
 
   return (
-    <div>
-      <Modal
-        isOpen={showModal}
-        onClose={handleCloseModal} // Pass the handleCloseModal function as a prop
-        title="Example Modal"
-        content="This is the content of the modal."
-      />
+    <div className="container">
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+      {sessionData && (
+        <div>
+          <p>Session Data:</p>
+          <pre>{JSON.stringify(sessionData, null, 2)}</pre>
+          <p>USER DATA:</p>
+          <pre>{JSON.stringify(user, null, 2)}</pre>
+        </div>
+      )}
+      <button
+        className="btn btn-primary btn-lg"
+        onClick={handleClick}
+        disabled={loading}
+      >
+        {loading ? "Fetching Session..." : "Fetch Session Data"}
+      </button>
     </div>
   );
 };
 
-export default Home;
+export default Test;

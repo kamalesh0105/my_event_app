@@ -1,53 +1,35 @@
-const { collection, getDocs, query, where } = require("firebase/firestore");
-// const db = require("../../config/supabase");
-const bcrypt = require("bcryptjs");
-class User {
-  constructor(username, password) {
-    this.username = username;
-    this.password = password;
-  }
+const supabase = require("../../config/supabase");
 
-  static async getHashedPassword(username) {
-    try {
-      const q = query(
-        collection(db, "auth"),
-        where("username", "==", username)
-      );
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        return doc.data().password;
-      } else {
-        console.log("User not found in the database");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error loading password from the database:", error.message);
-      return null;
-    }
+class login {
+  static isset(variable) {
+    return typeof variable !== "undefined" && variable !== null;
   }
 
   static async authenticate(username, password) {
-    try {
-      const hashedPassword = await User.getHashedPassword(username);
-
-      if (!hashedPassword) {
-        console.log("User not found");
+    console.log("login class");
+    if (this.isset(username) && this.isset(password)) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: username,
+          password: password,
+        });
+        const { user, session } = data;
+        if (user && session) {
+          //console.log("User:", user);
+          console.log("Session:", session);
+          return data;
+        } else {
+          console.log("Error:", error);
+          return false;
+        }
+      } catch (error) {
+        console.error("Error during login:", error.message);
         return false;
       }
-
-      const isMatch = bcrypt.compareSync(password, hashedPassword);
-      if (isMatch) {
-        console.log("Authentication successful");
-        return true;
-      } else {
-        console.log("Authentication failed: Incorrect password");
-        return false;
-      }
-    } catch (error) {
-      console.error("Error during authentication:", error.message);
+    } else {
       return false;
     }
   }
 }
-module.exports = User;
+
+module.exports = login;

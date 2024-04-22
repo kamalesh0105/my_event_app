@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { navigate } from "@/actions";
 import axios from "axios";
 import styles from "../../styles/admin.module.css";
+import supabaseClient from "@/app/config/supabaseClient";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,13 +29,17 @@ const LoginForm = () => {
   const Onsignin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/adminlogin", {
+      const response = await axios.post("/api/auth/login", {
         username,
         password,
       });
 
       if (response.status === 200 && response.data.success) {
         setLoginStatus(true);
+        const { access_token, refresh_token } = response.data;
+        console.log(access_token, refresh_token);
+        await supabaseClient.auth.setSession({ access_token, refresh_token });
+
         setTimeout(() => {
           setLoginStatus(null); // Clear the success message
           navigate("/admin/dashboard/home");
@@ -44,14 +49,14 @@ const LoginForm = () => {
         setLoginStatus(false);
         setTimeout(() => {
           setLoginStatus(null); // Clear the success message
-          navigate("/admin");
+          navigate("/auth/login");
         }, 1000);
       }
     } catch (error) {
       setLoginStatus(false);
       setTimeout(() => {
         setLoginStatus(null); // Clear the success message
-        navigate("/admin");
+        navigate("/auth/login");
       }, 1000);
       console.log("Error While Signin: " + error);
     }
@@ -127,7 +132,9 @@ const LoginForm = () => {
           </p>
         </form>
         {loginStatus !== null && (
-          <p>{loginStatus ? "Login success!" : "Login failed...Try Again"}</p>
+          <p>
+            {loginStatus ? "Login success!" : "Invalid Username or Password"}
+          </p>
         )}
       </div>
     </div>
