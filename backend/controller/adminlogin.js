@@ -6,25 +6,28 @@ const login = async (req, res) => {
   const { username, password } = req.body;
   try {
     if (username && password) {
-      const { user, session } = await Login.authenticate(username, password);
+      const data = await Login.authenticate(username, password);
+      const { user, session } = data;
+      console.log(data);
       if (user !== null && session !== null) {
-        console.log("inside api log");
         res.status(200).json({
           isLogin: true,
           access_token: session.access_token,
           refresh_token: session.refresh_token,
         });
       } else {
-        res
-          .status(400)
-          .json({ isLogin: false, error: "Invalid username or password" });
+        if (data.email) {
+          res.status(200).json({ isLogin: false, error: data.email });
+        } else {
+          res.status(400).json({ isLogin: false });
+        }
       }
     } else {
       res.status(400).json({ error: "Username and password are required" });
     }
   } catch (error) {
     console.error("Unexpected error during login:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: data.email });
   }
 };
 

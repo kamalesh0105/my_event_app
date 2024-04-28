@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [loginStatus, setLoginStatus] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [errMsg, seterrMsg] = useState("");
 
   useEffect(() => {
     setIsMounted(true);
@@ -35,6 +36,7 @@ const LoginForm = () => {
       });
 
       if (response.status === 200 && response.data.success) {
+        seterrMsg(response.data.message);
         setLoginStatus(true);
         const { access_token, refresh_token } = response.data;
         console.log(access_token, refresh_token);
@@ -45,7 +47,8 @@ const LoginForm = () => {
           navigate("/admin/dashboard/home");
         }, 1000);
       } else {
-        console.log(response.data.message);
+        // seterrMsg(response.message);
+        seterrMsg(response.data.message);
         setLoginStatus(false);
         setTimeout(() => {
           setLoginStatus(null); // Clear the success message
@@ -53,6 +56,7 @@ const LoginForm = () => {
         }, 1000);
       }
     } catch (error) {
+      seterrMsg("Invalid username or Password");
       setLoginStatus(false);
       setTimeout(() => {
         setLoginStatus(null); // Clear the success message
@@ -83,7 +87,7 @@ const LoginForm = () => {
               htmlFor="username"
               className="form-label font-weight-bold text-light"
             >
-              Username
+              Email
             </label>
             <input
               type="text"
@@ -132,9 +136,7 @@ const LoginForm = () => {
           </p>
         </form>
         {loginStatus !== null && (
-          <p>
-            {loginStatus ? "Login success!" : "Invalid Username or Password"}
-          </p>
+          <p>{loginStatus ? "Login success!" : errMsg}</p>
         )}
       </div>
     </div>

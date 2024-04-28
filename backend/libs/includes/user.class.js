@@ -15,19 +15,21 @@ class login {
         });
         const { user, session } = data;
         if (user && session) {
-          //console.log("User:", user);
-          console.log("Session:", session);
           return data;
         } else {
           console.log("Error:", error);
-          return false;
+          if (error && error.message === "Email not confirmed") {
+            return { user: null, email: true };
+          } else {
+            return { user: null, email: false };
+          }
         }
       } catch (error) {
         console.error("Error during login:", error.message);
-        return false;
+        return { user: null };
       }
     } else {
-      return false;
+      return { user: null };
     }
   }
 }
