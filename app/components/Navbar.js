@@ -1,4 +1,36 @@
+"use client";
+// import { logoutsession } from "../api/auth/logout/route";
+import Session from "@/app/includes/session.class";
+import { useState, useEffect } from "react";
 const Navbar = () => {
+  const [logout, setLogout] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const loggedIn = await Session.isLoggedIn();
+        setIsLoggedIn(loggedIn);
+      } catch (error) {
+        console.error("Error checking login status:", error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+  const handleLogout = async () => {
+    console.log("Heeloo");
+    try {
+      setLogout(true);
+      const { redirect } = await Session.logoutSession();
+      if (redirect.status) {
+        window.location.href = redirect.destination;
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    } finally {
+      setLogout(false);
+    }
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-dark justify-content-center pt-3 border-bottom border-dark ">
       <button
@@ -69,6 +101,16 @@ const Navbar = () => {
               <a href="/auth/login">Dashboard</a>
             </button>
           </li>
+          {isLoggedIn && (
+            <li className="nav-item px-0">
+              <button
+                className="btn btn-outline-secondary transparent-btn text-light"
+                onClick={handleLogout}
+              >
+                <a>Logout</a>
+              </button>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

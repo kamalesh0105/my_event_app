@@ -3,16 +3,22 @@ import React, { useState, useEffect } from "react";
 import { navigate } from "@/actions";
 import axios from "axios";
 import styles from "../../styles/admin.module.css";
-import supabaseClient from "@/app/config/supabaseClient";
+import session from "../../includes/session.class";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginStatus, setLoginStatus] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
   const [errMsg, seterrMsg] = useState("");
-
+  const verifySession = async () => {
+    const isLoggedIn = await session.isLoggedIn();
+    if (isLoggedIn) {
+      navigate("/admin/dashboard/home"); // Redirect if session is already set
+    }
+  };
   useEffect(() => {
     setIsMounted(true);
+    verifySession();
   }, []);
 
   if (!isMounted) {
@@ -38,9 +44,7 @@ const LoginForm = () => {
       if (response.status === 200 && response.data.success) {
         seterrMsg(response.data.message);
         setLoginStatus(true);
-        const { access_token, refresh_token } = response.data;
-        console.log(access_token, refresh_token);
-        await supabaseClient.auth.setSession({ access_token, refresh_token });
+        session.setSession(response.data);
 
         setTimeout(() => {
           setLoginStatus(null); // Clear the success message

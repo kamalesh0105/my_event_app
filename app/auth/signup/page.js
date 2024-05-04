@@ -1,14 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { navigate } from "@/actions";
 import axios from "axios";
 import styles from "../../styles/admin.module.css";
+import Session from "@/app/includes/session.class";
 const SignupForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpass, setconfirmpass] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [signupStatus, setSignupStatus] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [errMsg, seterrMsg] = useState("");
+  const [pswdstrength, setPswdStrength] = useState(true);
+
+  const verifySession = async () => {
+    const isLoggedIn = await Session.isLoggedIn();
+    if (isLoggedIn) {
+      navigate("/admin/dashboard/home"); // Redirect if session is already set
+    }
+  };
+  useEffect(() => {
+    setIsMounted(true);
+    verifySession();
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   const onChangerUsername = (e) => {
     setUsername(e.target.value);
@@ -23,37 +42,42 @@ const SignupForm = () => {
 
   const Onsignup = async (e) => {
     e.preventDefault();
-    setPasswordMatch(password == confirmpass);
-    if (!passwordMatch) {
-      return;
+    if (!(password == confirmpass)) {
+      setPasswordMatch(false);
+      seterrMsg("password does not match");
     } else {
-      try {
-        const response = await axios.post("/api/auth/signup", {
-          username,
-          password,
-        });
+      if (password.length < 6) {
+        setPswdStrength(false);
+        seterrMsg("Password should be atleast 6 characters");
+      } else {
+        try {
+          const response = await axios.post("/api/auth/signup", {
+            username,
+            password,
+          });
 
-        if (response.status === 200 && response.data.success) {
-          setSignupStatus(true);
-          setTimeout(() => {
-            setSignupStatus(null); // Clear the success message
-            navigate("/auth/login");
-          }, 1000);
-        } else {
-          console.log(response.data.message);
+          if (response.status === 200 && response.data.success) {
+            setSignupStatus(true);
+            setTimeout(() => {
+              setSignupStatus(null); // Clear the success message
+              navigate("/auth/verifyEmail");
+            }, 1000);
+          } else {
+            console.log(response.data.message);
+            setSignupStatus(false);
+            setTimeout(() => {
+              setSignupStatus(null); // Clear the success message
+              navigate("/auth/signup");
+            }, 3000);
+          }
+        } catch (error) {
           setSignupStatus(false);
           setTimeout(() => {
             setSignupStatus(null); // Clear the success message
             navigate("/auth/signup");
-          }, 3000);
+          }, 1000);
+          console.log("Error While Signin: " + error);
         }
-      } catch (error) {
-        setSignupStatus(false);
-        setTimeout(() => {
-          setSignupStatus(null); // Clear the success message
-          navigate("/auth/signup");
-        }, 1000);
-        console.log("Error While Signin: " + error);
       }
     }
   };
@@ -128,8 +152,8 @@ const SignupForm = () => {
               placeholder="Confirm your password"
             />
           </div>
-          {!passwordMatch && (
-            <small className="text-danger ">Password Does not match</small>
+          {(!passwordMatch || !pswdstrength) && (
+            <small className="text-danger ">{errMsg}</small>
           )}
           <button
             type="submit"
