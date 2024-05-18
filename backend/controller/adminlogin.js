@@ -1,14 +1,11 @@
 const Login = require("../libs/includes/user.class");
 
 const login = async (req, res) => {
-  console.log("login controller");
-
   const { username, password } = req.body;
   try {
     if (username && password) {
       const data = await Login.authenticate(username, password);
       const { user, session } = data;
-      console.log(data);
       if (user !== null && session !== null) {
         res.status(200).json({
           isLogin: true,

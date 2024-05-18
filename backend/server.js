@@ -5,12 +5,14 @@ const dotenv = require("dotenv");
 //import libs files here...
 const userLoginRoute = require("./router/user.Route");
 const testrouter = require("./router/test.Router");
+const eventrouter = require("./router/dashboard/event.Router");
 //server code
 const app = express();
 app.use(express.json());
 dotenv.config();
 app.use("/auth", userLoginRoute);
 app.use("/test", testrouter);
+app.use("/event", eventrouter);
 const port = process.env.PORT || 5000;
 app.get("/", (req, res) => {
   res.json("Welcome to myserver");

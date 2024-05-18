@@ -15,7 +15,6 @@ class signup {
         password: password,
       });
       console.log("errror" + error);
-      console.log(data);
       return data;
     } else {
       return false;

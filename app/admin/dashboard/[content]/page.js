@@ -3,8 +3,20 @@ import Sidebar from "@/app/components/admin/sidebar";
 import Layout from "@/app/components/admin/Layout";
 import styles from "@/app/assets/styles/dashboard.module.css";
 import dynamic from "next/dynamic";
+import UseAuth from "@/app/includes/Authentication.class";
 
 export default function Dashboard({ params }) {
+  const isLoading = UseAuth();
+  if (isLoading) {
+    return (
+      <div className="d-flex flex-column justify-content-center align-items-center vh-100">
+        <div className="text-center">
+          <h5 className="text-white pt-2">Loading Dashboard Content....</h5>
+        </div>
+      </div>
+    );
+  }
+
   const option = params?.content || "home";
   console.log(option);
 

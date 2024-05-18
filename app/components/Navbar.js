@@ -1,10 +1,10 @@
 "use client";
-// import { logoutsession } from "../api/auth/logout/route";
-import Session from "@/app/includes/session.class";
 import { useState, useEffect } from "react";
+import Session from "@/app/includes/session.class";
+
 const Navbar = () => {
-  const [logout, setLogout] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -17,22 +17,20 @@ const Navbar = () => {
 
     checkLoginStatus();
   }, []);
+
   const handleLogout = async () => {
-    console.log("Heeloo");
     try {
-      setLogout(true);
       const { redirect } = await Session.logoutSession();
       if (redirect.status) {
         window.location.href = redirect.destination;
       }
     } catch (error) {
       console.error("Error during logout:", error);
-    } finally {
-      setLogout(false);
     }
   };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark justify-content-center pt-3 border-bottom border-dark ">
+    <nav className="navbar navbar-expand-lg navbar-dark justify-content-center pt-3 border-bottom border-dark">
       <button
         className="navbar-toggler"
         type="button"
@@ -49,17 +47,15 @@ const Navbar = () => {
         id="navbarNav"
       >
         <div className="d-flex align-items-center">
-          <div className="img ">
-            <a className="navbar-brand" href="/">
-              <img
-                src="/logo.png"
-                style={{ width: "40px", height: "auto" }}
-                alt="Logo"
-              />
-            </a>
-          </div>
+          <a className="navbar-brand" href="/">
+            <img
+              src="/logo.png"
+              style={{ width: "40px", height: "auto" }}
+              alt="Logo"
+            />
+          </a>
         </div>
-        <ul className="navbar-nav ">
+        <ul className="navbar-nav">
           <li className="nav-item px-3">
             <a href="/" className="nav-link active">
               Home
@@ -92,14 +88,20 @@ const Navbar = () => {
             ></i>
           </li>
           <li className="nav-item px-0">
-            <button className="btn btn-outline-secondary transparent-btn text-light">
-              <a href="/register"> Register Now!</a>
-            </button>
+            <a
+              href="/register"
+              className="btn btn-outline-secondary transparent-btn text-light"
+            >
+              Register Now!
+            </a>
           </li>
           <li className="nav-item px-4">
-            <button className="btn btn-outline-secondary transparent-btn text-light">
-              <a href="/auth/login">Dashboard</a>
-            </button>
+            <a
+              href="/auth/login"
+              className="btn btn-outline-secondary transparent-btn text-light"
+            >
+              Dashboard
+            </a>
           </li>
           {isLoggedIn && (
             <li className="nav-item px-0">
@@ -107,7 +109,7 @@ const Navbar = () => {
                 className="btn btn-outline-secondary transparent-btn text-light"
                 onClick={handleLogout}
               >
-                <a>Logout</a>
+                Logout
               </button>
             </li>
           )}
