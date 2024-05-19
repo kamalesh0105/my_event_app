@@ -1,53 +1,59 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 const home = () => {
-  const eventsData = {
-    events: [
-      {
-        id: 1,
-        title: "Event 1",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        image: "https://picsum.photos/200/80",
-      },
-      {
-        id: 2,
-        title: "Event 2",
-        description:
-          "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        image: "https://picsum.photos/200/80",
-      },
-      {
-        id: 3,
-        title: "Event 3",
-        description:
-          "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Ut enim ad minim veniam, quis nostrud exercitation ullamco ",
-        image: "https://picsum.photos/200/80",
-      },
-      {
-        id: 3,
-        title: "Event 3",
-        description:
-          "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "https://picsum.photos/200/80",
-      },
-    ],
-  };
-  const events = eventsData.events;
+  const [events, setEventsData] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/event/getEvents"
+        );
+        const result = response.data;
+
+        if (result.res) {
+          setEventsData(result.data);
+          console.log(result.data);
+        } else {
+          console.error("Failed to fetch events");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container">
       <div className="row">
         {events.map((event) => (
-          <div key={event.id} className="col-md-4 mb-4">
+          <div key={event.event_id} className="col-md-4 mb-4">
             <div
               className="card event-card"
               style={{ height: "300px", margin: "20px" }}
             >
               <img
-                src={event.image}
+                src={event.public_url}
                 className="card-img-top"
-                alt={event.title}
+                alt={event.name}
               />
               <div className="card-body">
-                <h5 className="card-title">{event.title}</h5>
-                <p className="card-text description">{event.description}</p>
+                <h5 className="card-title text-dark ">{event.name}</h5>
+                <p className="card-text description text-dark ">
+                  {event.description}
+                </p>
               </div>
             </div>
           </div>

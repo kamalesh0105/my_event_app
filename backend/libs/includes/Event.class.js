@@ -54,11 +54,27 @@ class Events {
   }
   //fetches all events from db
   static async getEvents() {
-    const { data, error } = await supabase.from("events").select("*");
-    if (data) {
-      return data;
-    } else {
-      console.log("error manage event");
+    try {
+      const { data, error } = await supabase.from("events").select("*");
+      if (error) {
+        console.log("Error fetching events: " + error.message);
+        return null;
+      }
+
+      // Map over the data to generate public URLs for the images
+      const eventsWithPublicUrls = data.map((event) => {
+        const imagePath = event.image_url;
+        const { data } = supabase.storage
+          .from("event_images")
+          .getPublicUrl(imagePath); // Assuming `image_url` contains the path to the image
+        return {
+          ...event,
+          public_url: data.publicUrl,
+        };
+      });
+      return eventsWithPublicUrls;
+    } catch (error) {
+      console.error("Error managing event:", error);
       return null;
     }
   }

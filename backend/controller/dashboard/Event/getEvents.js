@@ -1,17 +1,14 @@
 const db = require("../../../libs/includes/Event.class");
 const getEvents = async (req, res) => {
-  const { name, description, image } = req.body;
   try {
     const data = await db.getEvents();
     if (data != null) {
-      res.status(200).json({ data: data, staus: true });
+      res.status(200).json({ data: data, status: true });
     } else {
-      res
-        .status(400)
-        .json({ err: "error fetching data", data: data, status: false });
+      res.status(400).json({ data: data, status: false });
     }
-  } catch {
-    res.status(500).json({ err: "errror uploading", status: false });
+  } catch (err) {
+    res.status(500).json({ data: err, status: false });
   }
 };
 
