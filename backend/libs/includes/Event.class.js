@@ -56,7 +56,6 @@ class Events {
   static async getEvents() {
     const { data, error } = await supabase.from("events").select("*");
     if (data) {
-      console.log(data);
       return data;
     } else {
       console.log("error manage event");

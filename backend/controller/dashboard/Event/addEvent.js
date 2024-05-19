@@ -4,6 +4,7 @@ const AddEvents = async (req, res) => {
   console.log("Received request to add event with image");
   const { name, description, event_id } = req.body;
   // Check if image data is present in the request body
+  console.log(name, description, event_id);
   if (req.file && name && description && event_id) {
     const image = req.file;
     const filename = image.originalname;
@@ -27,7 +28,7 @@ const AddEvents = async (req, res) => {
       if (status) {
         res
           .status(200)
-          .json({ res: true, status: "successfully craeted a event" });
+          .json({ res: true, status: "successfully created a event" });
       } else {
         res
           .status(400)

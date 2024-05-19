@@ -40,7 +40,7 @@ const LoginForm = () => {
         username,
         password,
       });
-
+      console.log(response);
       if (response.status === 200 && response.data.success) {
         seterrMsg(response.data.message);
         setLoginStatus(true);

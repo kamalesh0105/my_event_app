@@ -1,13 +1,26 @@
+// components/EventForm.js
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
+import CustomToast from "@/app/components/Toast";
 
 const EventForm = () => {
+  const toastTitle = "EventMania";
+  const [toastMessage, setToastMessage] = useState("");
   const [formData, setFormData] = useState({
+    event_id: "",
     name: "",
     description: "",
     image: null,
   });
+
+  const [showToast, setShowToast] = useState(false);
+  const handleShowToast = () => {
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000); // Automatically hide the toast after 3 seconds
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,29 +45,59 @@ const EventForm = () => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("image", formData.image);
+    formDataToSend.append("event_id", formData.event_id);
 
     try {
-      await axios.post("localhost:5000/events/add", formDataToSend, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      alert("Event created successfully!");
-      // Optionally, clear the form after successful submission
+      const response = await axios.post(
+        "http://localhost:5000/event/add",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.data.res) {
+        // Event creation successful
+        setToastMessage(response.data.status); // Display success message
+      } else {
+        // Event creation failed
+        setToastMessage(response.data.status); // Display error message
+      }
+      handleShowToast();
+
+      // Clear the form after successful or failed submission
       setFormData({
+        event_id: "",
         name: "",
         description: "",
         image: null,
       });
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("Failed to create event. Please try again later.");
+      setToastMessage("Failed to create event. Please try again later.");
+      handleShowToast();
     }
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center">
       <form onSubmit={handleSubmit} className="mt-4">
+        <div className="mb-3">
+          <label htmlFor="event_id" className="form-label">
+            Event ID:
+          </label>
+          <input
+            type="text"
+            id="event_id"
+            name="event_id"
+            value={formData.event_id}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
         <div className="mb-3">
           <label htmlFor="name" className="form-label">
             Event Name:
@@ -99,6 +142,12 @@ const EventForm = () => {
           Create Event
         </button>
       </form>
+      <CustomToast
+        show={showToast}
+        setShow={setShowToast}
+        title={toastTitle}
+        message={toastMessage}
+      />
     </div>
   );
 };
