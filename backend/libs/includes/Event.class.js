@@ -8,9 +8,16 @@ class Events {
     event_id,
     image,
     imageName,
-    fileExtension
+    fileExtension,
+    event_type
   ) {
-    const { res } = await this.add_event_data(event_id, name, description);
+    const type = event_type == "tech" ? true : false;
+    const { res } = await this.add_event_data(
+      event_id,
+      name,
+      description,
+      type
+    );
     if (res) {
       const { data, res } = await this.add_image(
         image,
@@ -38,11 +45,12 @@ class Events {
     }
   }
   //insert the db content only
-  static async add_event_data(event_id, name, description) {
+  static async add_event_data(event_id, name, description, type) {
     const { error } = await supabase.from("events").insert({
       event_id,
       name,
       description,
+      event_type: type,
     });
 
     if (error == null) {
@@ -53,9 +61,19 @@ class Events {
     }
   }
   //fetches all events from db
-  static async getEvents() {
+  static async getEvents(event_type) {
     try {
-      const { data, error } = await supabase.from("events").select("*");
+      // Create a query builder
+      let query = supabase.from("events").select("*");
+
+      // Add event type filtering if provided
+      if (event_type == "tech") {
+        query = query.eq("event_type", true);
+      } else if (event_type == "non-tech") {
+        query = query.eq("event_type", false);
+      }
+
+      const { data, error } = await query;
       if (error) {
         console.log("Error fetching events: " + error.message);
         return null;
@@ -78,6 +96,7 @@ class Events {
       return null;
     }
   }
+
   //insert image to the storage bucket
   static async add_image(image, imageName, fileExtension) {
     const path = `images/${imageName}`;

@@ -12,6 +12,7 @@ const EventForm = () => {
     name: "",
     description: "",
     image: null,
+    event_type: "",
   });
 
   const [showToast, setShowToast] = useState(false);
@@ -41,8 +42,10 @@ const EventForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //appending the current data to the custom form
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
+    formDataToSend.append("event_type", formData.event_type);
     formDataToSend.append("description", formData.description);
     formDataToSend.append("image", formData.image);
     formDataToSend.append("event_id", formData.event_id);
@@ -111,6 +114,39 @@ const EventForm = () => {
             className="form-control"
             required
           />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Event Type:</label>
+          <div className="form-check">
+            <input
+              type="radio"
+              id="tech"
+              name="event_type"
+              value="tech"
+              checked={formData.event_type === "tech"}
+              onChange={handleChange}
+              className="form-check-input"
+              required
+            />
+            <label htmlFor="tech" className="form-check-label">
+              Technical
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              type="radio"
+              id="non-tech"
+              name="event_type"
+              value="non-tech"
+              checked={formData.event_type === "non-tech"}
+              onChange={handleChange}
+              className="form-check-input"
+              required
+            />
+            <label htmlFor="non-tech" className="form-check-label">
+              Non-Technical
+            </label>
+          </div>
         </div>
         <div className="mb-3">
           <label htmlFor="description" className="form-label">

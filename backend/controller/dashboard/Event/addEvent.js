@@ -2,7 +2,7 @@ const db = require("../../../libs/includes/Event.class");
 const { decode } = require("base64-arraybuffer");
 const AddEvents = async (req, res) => {
   console.log("Received request to add event with image");
-  const { name, description, event_id } = req.body;
+  const { name, description, event_id, event_type } = req.body;
   // Check if image data is present in the request body
   console.log(name, description, event_id);
   if (req.file && name && description && event_id) {
@@ -21,7 +21,8 @@ const AddEvents = async (req, res) => {
         event_id,
         fileBase64,
         imageName,
-        fileExtension
+        fileExtension,
+        event_type
       );
 
       // Check if data was successfully processed
