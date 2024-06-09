@@ -7,7 +7,7 @@ export async function POST(request) {
     console.log("Frontend login Route api");
 
     // Replace the following URL with your actual API endpoint
-    const apiUrl = "http://localhost:5000/auth/login";
+    const apiUrl = `${process.env.backend}auth/login`;
     const response = await axios.post(apiUrl, { username, password });
 
     if (response.status === 200 && response.data.isLogin == true) {

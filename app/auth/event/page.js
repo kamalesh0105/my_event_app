@@ -48,7 +48,7 @@ const EventForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/event/add",
+        `${process.env.backend}event/add`,
         formDataToSend,
         {
           headers: {

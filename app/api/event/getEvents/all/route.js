@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function GET(request) {
   try {
-    const apiUrl = "http://localhost:5000/event/get?event_type=all";
+    const apiUrl = `${process.env.backend}event/get?event_type=all`;
     const response = await axios.get(apiUrl);
 
     if (response.status === 200 && response.data.status == true) {

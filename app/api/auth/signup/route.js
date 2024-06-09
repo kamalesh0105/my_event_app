@@ -7,7 +7,7 @@ export async function POST(request) {
     console.log("api got called");
 
     // Replace the following URL with your actual API endpoint
-    const apiUrl = "http://localhost:5000/auth/signup";
+    const apiUrl = `${process.env.backend}auth/signup`;
     const response = await axios.post(apiUrl, { username, password });
 
     if (response.status === 200) {
