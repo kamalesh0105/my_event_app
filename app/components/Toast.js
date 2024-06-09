@@ -1,20 +1,28 @@
+"use client";
 // components/CustomToast.js
 import { useEffect, useRef, useState } from "react";
-import * as bootstrap from "bootstrap";
+// import * as bootstrap from "bootstrap";
 const CustomToast = ({ show, setShow, title, message }) => {
   const toastRef = useRef(null);
 
   useEffect(() => {
+    let toastInstance;
     if (toastRef.current) {
-      const toast = new bootstrap.Toast(toastRef.current);
-      if (show) {
-        toast.show();
-      } else {
-        toast.hide();
-      }
+      import("bootstrap").then((bootstrap) => {
+        toastInstance = new bootstrap.Toast(toastRef.current);
+        if (show) {
+          toastInstance.show();
+        } else {
+          toastInstance.hide();
+        }
+      });
     }
+    return () => {
+      if (toastInstance) {
+        toastInstance.dispose();
+      }
+    };
   }, [show]);
-
   return (
     <div
       ref={toastRef}

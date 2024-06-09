@@ -106,7 +106,7 @@ class Events {
     if (data) {
       return { data: data, res: true };
     } else {
-      console.log(err);
+      console.log(err + "fgf");
       return { data: err, res: false };
     }
   }
